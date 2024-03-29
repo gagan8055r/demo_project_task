@@ -16,8 +16,6 @@ Usage
 
 Contributing
 
-
-
 Features
 
 Retrieve all phone users
