@@ -22,6 +22,7 @@ const getUsers=((req,res)=>{
 
 
 
+
 const getUser = (req, res) => {
     const address = req.params.id;
     knex('phone_users').where('id', address).select('*').then((result) => {
