@@ -11,7 +11,7 @@ auth.validate(userData)
     .then(validData => {
         const endTime = performance.now(); // End time
         const duration = endTime - startTime;
-        console.log('Validation successful. Time taken:', duration, 'milliseconds');
+        console.log('Yup validation. Time taken:', duration, 'milliseconds');
         console.log('Validated data:', validData);
     })
     .catch(error => {

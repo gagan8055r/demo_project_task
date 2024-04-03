@@ -34,7 +34,7 @@ const getUser = (req, res) => {
     });
 }
 
-
+  
 // const createUser=((req,res)=>{
 //     const process=req.body
 //     knex('phone_users').insert({'id':process.id,'name':process.name,'email':process.email,'phone_number':process.phone_number,'updated_at':knex.fn.now(),'created_at':knex.fn.now(),'is_active':process.status})
