@@ -1,7 +1,7 @@
 const express = require('express');
 var bodyParser=require('body-parser')
 const knex=require('./db/knex.js')
-
+const authenticator=require('./validate')
 const app=express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
@@ -22,6 +22,7 @@ const getUsers=((req,res)=>{
 
 
 
+
 const getUser = (req, res) => {
     const address = req.params.id;
     knex('phone_users').where('id', address).select('*').then((result) => {
@@ -33,18 +34,42 @@ const getUser = (req, res) => {
     });
 }
 
+  
+// const createUser=((req,res)=>{
+//     const process=req.body
+//     knex('phone_users').insert({'id':process.id,'name':process.name,'email':process.email,'phone_number':process.phone_number,'updated_at':knex.fn.now(),'created_at':knex.fn.now(),'is_active':process.status})
+//         .then(()=>{
+//             res.status(201).send("user added successfully")
+//         })
+//         .catch(error=>{
+//             res.status(404).send('servers side error')
+//         })
+// })
+const createUser = async (req, res) => {
+    const process = req.body;
 
-const createUser=((req,res)=>{
-    const process=req.body
-    knex('phone_users').insert({'id':process.id,'name':process.name,'email':process.email,'phone_number':process.phone_number,'updated_at':knex.fn.now(),'created_at':knex.fn.now(),'is_active':process.status})
-        .then(()=>{
-            res.status(201).send("user added successfully")
-        })
-        .catch(error=>{
-            res.status(404).send('servers side error')
-        })
-})
+    try {
 
+        const result = await authenticator.validate(process);
+        console.log(result)
+        await knex('phone_users').insert({
+            'id': process.id,
+            'name': process.name,
+            'email': process.email,
+            'phone_number': process.phone_number,
+            'updated_at': knex.fn.now(),
+            'created_at': knex.fn.now(),
+            'is_active': process.status
+        });
+
+
+        res.status(201).send("user added successfully");
+    } catch (error) {
+
+        console.log("Error creating user:", error.message);
+        res.status(400).send('Invalid input');
+    }
+};
 const updateUser=((req,res)=>{
 
     const reqId = req.params.id;
@@ -113,11 +138,6 @@ const reqResult=((req,res)=>{
 })
 
 
-
-
-
-
-
 app.get('/all-users',getUsers)
 app.get('/single-user/:id',getUser)
 app.post('/create-user',createUser)
@@ -125,6 +145,7 @@ app.patch('/update-user/:id',updateUser)
 app.put('/update-f-user/:id',updateFullUser)
 app.delete('/delete-user/:id',deleteUser)
 app.get('/batch-users-req',reqResult)
+
 
 
 const port=4000;
