@@ -1,0 +1,51 @@
+Yup:
+
+Yup is a schema validation library for JavaScript and TypeScript. It's designed to be intuitive, extensible, and easy to use.Focuses on chaining methods for validations, making it potentially more readable for simpler validations.Inspired by Joi, offering a similar syntax for defining validation schemas.Generally considered lighter-weight compared to Joi, leading to potentially faster execution times, especially for simpler validations.Well-suited for client-side validation due to its smaller bundle size.
+
+For simpler validations and a focus on performance, Yup might be a good choice.If you need validation on both the client-side and server-side, Yup's smaller footprint could be beneficial for the client-side.Focuses on a simple and concise syntax for defining validation rules.
+
+For most projects, Yup is a great starting point due to its ease of use and performance.
+Yup validation. Time taken: 1.4226000010967255 milliseconds
+
+
+Joi :
+Joi is a schema validation library for Node.js and browser applications. It's part of the hapi ecosystem and is commonly used for validating request payloads, query parameters, and other data in web applications.May have slightly slower performance due to its wider feature set and additional functionalities.
+Still performs well for most use cases, especially on the server-side.Supports asynchronous validation for interacting with external services during validation.Offers schema customization options for defining custom error messages or object transformations.It is mainly used in server-side validation.
+
+For complex validations requiring advanced rules, asynchronous checks, or schema customization, Joi might be better suited.Joi offers a fluent and developer-friendly API for defining validation schemas.Supports asynchronous validation for interacting with external services during validation.If you need advanced validation features, asynchronous validation, or schema customization, Joi offers a more comprehensive set of functionalities.
+
+Execution time (get request):
+Request processed in 7ms  
+
+
+Ajv:
+
+While libraries like Joi are primarily designed for server-side use in Node.js, Ajv can be used in both server-side and client-side (browser) environments, making it suitable for isomorphic or universal JavaScript applications.
+
+Ajv achieves high performance in validating large and complex JSON schemas through its code generation approach. Instead of interpreting the schema at runtime, Ajv compiles the schema into efficient, optimized JavaScript code.
+
+While the performance benefits of Ajv may not be noticeable in simple use cases, they become more significant when dealing with large and complex schemas, high-volume data validation, or performance-critical applications. Ajv's code generation approach and optimization techniques make it a popular choice for scenarios where validation performance is a key concern. 
+More flexible as schemas can be written in JSON and potentially shared across languages.Steeper learning curve due to JSON Schema syntax
+
+Functionality:
+Utilizes Ajv to validate JSON request bodies against a predefined schema.
+Measures and logs the validation times for Ajv.
+Responds with appropriate error messages if validation fails.
+
+Execution time for post request:
+ JSON validation time: 0.12 ms
+ Joi validation time: 2.19 ms
+ Total validation time: 2.31 ms
+
+
+
+Express validator:
+
+Express Validator is a middleware for Express.js that provides request validation functionality. It's focused on validating request bodies, query parameters, and other data within Express applications. It integrates seamlessly with Express.js middleware pipeline, allowing validation checks to be performed before reaching your application logic.By integrating with the middleware pipeline, Express Validator allows you to define validation rules at a specific point in the request flow.
+
+Purpose: Middleware for query parameter validation.
+
+Functionality:
+Defines a route that validates query parameters using express-validator.
+Returns appropriate responses based on the validation result.
+
