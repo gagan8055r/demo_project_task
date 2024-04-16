@@ -8,9 +8,9 @@ module.exports = {
             database: 'SecondDb',
         },
         migrations: {
-            directory: 'db/migrations',
+            directory: './migrations',
         },
-        seeds: { directory: 'db/seeds' },
+        seeds: { directory: './seeds' },
 
     }
     ,
@@ -22,15 +22,5 @@ module.exports = {
         },
         seeds: { directory: './seeds' },
     },
-    test: {
-        client: 'pg',
-        connection: {
-            host: 'localhost',
-            user: 'postgres',
-            password: 'Gagan@489',
-            database: 'SecondDb',
-        },
-    },
+
 };
-
-
