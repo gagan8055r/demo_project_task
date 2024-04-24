@@ -38,63 +38,98 @@
 //
 
 
-
 const express = require('express');
-const axios = require('axios');
-
+// const axios = require('axios');
+const Sequelize=require('sequelize')
 const app = express();
-const port = 8011;
+const port = 8000;
 
 app.use(express.json());
 
-
-const HASURA_GRAPHQL_ENDPOINT = 'http://localhost:9695/v1/graphql';
+const POSTGRES_CONNECTION_STRING = 'postgres://postgres:postgrespassword@localhost:5432/postgres';
 
 app.post('/photo_event', async (req, res) => {
     console.log(req.body);
 
-    // Extract photoId from request body
-    const photoId = req.body.event.data.new.id;
+    const sequelize=await new Sequelize(POSTGRES_CONNECTION_STRING,{})
+const id=req.body.event.data.new.id
+    await sequelize.query("INSERT INTO blog_table(blog_id,type) values (:id,:type)",{
+        replacements:{
+            id,
+            type:"created"
+        }
+    })
+res.status(200)
 
+});
+
+
+
+// app.post('/update_photo_descrip', async (req, res) => {
+//     try {
+//         console.log(req.body);
+//
+//         const { id, new_description } = req.body.input;
+//
+//
+//         const sequelize = new Sequelize(POSTGRES_CONNECTION_STRING);
+//
+//
+//         const [updatedRowsCount, updatedRows] = await sequelize.query(
+//             'UPDATE photos_details SET photo_description = :new_description WHERE id = :id',
+//             {
+//                 replacements: { id: id, new_description: new_description }
+//             }
+//         );
+//
+//
+//         if (updatedRowsCount > 0) {
+//
+//             res.status(200).json({ updateDescription: `Description updated for photo with ID ${id}` });
+//         } else {
+//
+//             res.status(404).json({ error: `Photo with ID ${id} not found` });
+//         }
+//     } catch (error) {
+//         console.error('Error updating photo description:', error);
+//
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
+app.post('/update_photo_descrip', async (req, res) => {
     try {
-        // Construct GraphQL mutation
-        const mutation = `
-            mutation InsertBlogTable($photoId: Int!, $type: String!) {
-                insert_blog_table(objects: {id: $photoId, type: $type}) {
-                    affected_rows
-                }
-            }
-        `;
+        console.log(req.body);
 
-        const variables = {
-            photoId,
-            type: 'created'
-        };
+        // Extract id and new_description from the request body
+        const { id, new_description } = req.body.input;
 
-        // Send HTTP POST request to Hasura GraphQL endpoint
-        const response = await axios.post(
-            HASURA_GRAPHQL_ENDPOINT,
+        // Create a Sequelize instance
+        const sequelize = new Sequelize(POSTGRES_CONNECTION_STRING);
+
+        // Update the photo description in the photos_details table
+        const [updatedRowsCount, updatedRows] = await sequelize.query(
+            'UPDATE photos_details SET photo_description = :new_description WHERE id = :id',
             {
-                query: mutation,
-                variables
+                replacements: { id: id, new_description: new_description }
             }
         );
 
-        // Check if mutation was successful
-        if (response.data.data && response.data.data.insert_blog_table) {
-            res.sendStatus(200);
+        // Check if any rows were updated
+        if (updatedRowsCount > 0) {
+            // Send a JSON response with the updated description
+            res.status(200).json({ message: `Description updated for photo with ID ${id}` });
         } else {
-            // Handle mutation failure
-            console.error('Mutation failed:', response.data);
-            res.status(500).send('Failed to insert into blog_table');
+            // Send a JSON response indicating that the photo was not found
+            res.status(404).json({ message: `Photo with ID ${id} not found` });
         }
     } catch (error) {
-        // Handle HTTP request error
-        console.error('Error executing GraphQL mutation:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('Error updating photo description:', error);
+        // Send a JSON response for internal server error
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
 
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 });
+
